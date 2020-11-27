@@ -67,15 +67,22 @@ impl m {
     fn c(&self, int: interval) -> num {
         self.get(int.get_c())
     }
-    fn mach(&self, int: &mut interval) {
-        for i in 0..10 {
+    fn mach(&self, int: &mut interval, precision: usize) -> f64 {
+        let mut i = 0;
+        loop {
             let a = &int.0;
             let b = &int.1;
+            if round(a.x, precision) == round(b.x, precision) {
+                println!("Končni interval ({}, {})", a.x, b.x);
+                return round(a.x, precision);
+            }
             println!("Interval iskanja ({}, {})", a.x, b.x);
             if a.sign.is_none() {
                 println!("Dobili smo točno ničlo: x={}", a.x);
+                return a.x;
             } else if b.sign.is_none() {
                 println!("Dobili smo točno ničlo: x={}", b.x);
+                return b.x;
             } else {
                 if a.sign.unwrap() == b.sign.unwrap() {
                     println!("Ne znam določiti");
@@ -83,7 +90,8 @@ impl m {
                     let c = self.c(*int);
                     println!("c{} = {} = {}", i, F::from(c.x), c.x);
                     if c.sign.is_none() {
-                        println!("c{} je ničla", i)
+                        println!("c{} je ničla", i);
+                        return c.x;
                     } else {
                         println!(
                             "p(c{}) = {} kar je {}",
@@ -95,6 +103,7 @@ impl m {
                     }
                 }
             }
+            i += 1;
         }
     }
 }
@@ -107,26 +116,44 @@ fn display_bool(b: bool) -> &'static str {
     }
 }
 
+fn round(f: f64, precision: usize) -> f64 {
+    (f * 10_f64.powf(precision as f64)).round() / 10_f64.powf(precision as f64)
+}
+
 fn main() {
-    //let mut line = String::new();
-    //println!("Enter expr :");
-    //std::io::stdin().read_line(&mut line).unwrap();
-    let m = m::new("x^3-3*x+1".to_string());
-    //println!("Result: {}", m.eval(0.0));
-    // {:#.4}
-    let mut int = m.interval(0.0, 1.0);
-    m.mach(&mut int);
-    let a = &int.0;
-    let b = &int.1;
-    println!("Končni interval ({}, {})", a.x, b.x);
+    let mut line = String::new();
+    println!("Vpiši polinom (x^3-3*x+1):");
+    std::io::stdin().read_line(&mut line).unwrap();
+    if line.is_empty() {
+        line = "x^3-3*x+1".to_string()
+    }
+    let m = m::new(line);
+    line = "".to_string();
+    println!("Kakšna natančnost:");
+    std::io::stdin().read_line(&mut line).unwrap();
+    let precision: usize = line.parse().unwrap();
+    line = "".to_string();
+    println!("Interval (x, _):");
+    std::io::stdin().read_line(&mut line).unwrap();
+    let a: f64 = line.parse().unwrap();
+    line = "".to_string();
+    println!("Interval (_, x):");
+    std::io::stdin().read_line(&mut line).unwrap();
+    let b: f64 = line.trim().parse().unwrap();
+    let mut int = m.interval(a, b);
+    println!("x ≈ {}", m.mach(&mut int, precision));
 }
 
 #[test]
 fn it_works() {
     let m = m::new("x^3-3*x+1".to_string());
     let mut int = m.interval(0.0, 1.0);
-    m.mach(&mut int);
-    let a = &int.0;
-    let b = &int.1;
-    println!("Končni interval ({}, {})", a.x, b.x);
+    let precision: usize = 2;
+    assert_eq!(0.35, m.mach(&mut int, precision))
+}
+
+#[test]
+fn round_test() {
+    assert_eq!(0.05, round(0.05, 2));
+    assert_eq!(0.1, round(0.05, 1));
 }
