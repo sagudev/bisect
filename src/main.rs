@@ -74,9 +74,9 @@ impl m {
 
 fn display_bool(b: bool) -> &'static str {
     if b {
-        "+"
+        "poz"
     } else {
-        "-"
+        "neg"
     }
 }
 
@@ -86,24 +86,33 @@ fn main() {
     //std::io::stdin().read_line(&mut line).unwrap();
     let m = m::new("x^3-3*x+1".to_string());
     //println!("Result: {}", m.eval(0.0));
-    let int = m.interval(0.0, 1.0);
-    let a = &int.0;
-    let b = &int.1;
-    if a.sign.is_none() {
-        println!("Dobili smo točno ničlo {:?}", a)
-    } else if b.sign.is_none() {
-        println!("Dobili smo točno ničlo {:?}", b)
-    } else {
-        if a.sign.unwrap() == b.sign.unwrap() {
-            println!("Ne znam določiti");
+    let mut int = m.interval(0.0, 1.0);
+    for i in 0..10 {
+        let a = &int.0;
+        let b = &int.1;
+        println!("Interval iskanja ({}, {})", a.x, b.x);
+        if a.sign.is_none() {
+            println!("Dobili smo točno ničlo: x={}", a.x);
+        } else if b.sign.is_none() {
+            println!("Dobili smo točno ničlo: x={}", b.x);
         } else {
-            println!("Določujem");
-            let c = m.c(int);
-            println!("c = {:?}", c);
-            if c.sign.is_none() {
-                println!("c je ničla")
+            if a.sign.unwrap() == b.sign.unwrap() {
+                println!("Ne znam določiti");
             } else {
-                println!("nov interval {:?}", int.get_interval(c));
+                println!("Določujem...");
+                let c = m.c(int);
+                println!("c{} = {}", i, c.x);
+                if c.sign.is_none() {
+                    println!("c{} je ničla", i)
+                } else {
+                    println!(
+                        "p(c{}) = {} kar je {}",
+                        i,
+                        c.p,
+                        display_bool(c.sign.unwrap())
+                    );
+                    int = int.get_interval(c);
+                }
             }
         }
     }
