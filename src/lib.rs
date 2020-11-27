@@ -153,9 +153,19 @@ pub fn js_mach(poli: String, a: f64, b: f64, precision: usize) -> f64 {
 #[test]
 fn it_works() {
     let m = m::new("x^3-3*x+1".to_string());
-    let mut int = m.interval(0.0, 1.0);
     let precision: usize = 2;
-    assert_eq!(0.35, m.mach(&mut int, precision))
+    let mut int = m.interval(0.0, 1.0);
+    assert_eq!(0.35, m.mach(&mut int, precision));
+    let mut int = m.interval(1.0, 2.0);
+    assert_eq!(1.53, m.mach(&mut int, precision));
+    let mut int = m.interval(-1.0, -2.0);
+    assert_eq!(-1.88, m.mach(&mut int, precision));
+    let mut int = m.interval(1.0, 0.0);
+    assert_eq!(0.35, m.mach(&mut int, precision));
+    let mut int = m.interval(1.0, 2.0);
+    assert_eq!(1.53, m.mach(&mut int, precision));
+    let mut int = m.interval(-2.0, -1.0);
+    assert_eq!(-1.88, m.mach(&mut int, precision));
 }
 
 #[test]
