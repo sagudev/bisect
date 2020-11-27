@@ -121,25 +121,54 @@ fn round(f: f64, precision: usize) -> f64 {
 }
 
 fn main() {
-    let mut line = String::new();
-    println!("Vpiši polinom (x^3-3*x+1):");
-    std::io::stdin().read_line(&mut line).unwrap();
-    if line.is_empty() {
-        line = "x^3-3*x+1".to_string()
+    let mut m = m::new("x^3-3*x+1".to_string());
+    loop {
+        let mut line = String::new();
+        println!("Vpiši polinom (x^3-3*x+1):");
+        std::io::stdin()
+            .read_line(&mut line)
+            .expect("Failed to read line");
+        if !line.is_empty() {
+            m = m::new(line);
+            break;
+        }
     }
-    let m = m::new(line);
-    line = "".to_string();
-    println!("Kakšna natančnost:");
-    std::io::stdin().read_line(&mut line).unwrap();
-    let precision: usize = line.parse().unwrap();
-    line = "".to_string();
-    println!("Interval (x, _):");
-    std::io::stdin().read_line(&mut line).unwrap();
-    let a: f64 = line.parse().unwrap();
-    line = "".to_string();
-    println!("Interval (_, x):");
-    std::io::stdin().read_line(&mut line).unwrap();
-    let b: f64 = line.trim().parse().unwrap();
+
+    let mut precision: usize = 2;
+    loop {
+        let mut line = String::new();
+        println!("Kakšna natančnost:");
+        std::io::stdin().read_line(&mut line).unwrap();
+        precision = match line.trim().parse() {
+            Ok(num) => num,
+            Err(_) => continue,
+        };
+        break
+    }
+
+    let mut a: f64 = 0.0;
+    loop {
+        let mut line = String::new();
+        println!("Interval (x, _):");
+        std::io::stdin().read_line(&mut line).unwrap();
+        a = match line.trim().parse() {
+            Ok(num) => num,
+            Err(_) => continue,
+        };
+        break
+    }
+
+    let mut b: f64 = 0.0;
+    loop {
+        let mut line = String::new();
+        println!("Interval (_, x):");
+        std::io::stdin().read_line(&mut line).unwrap();
+        b = match line.trim().parse() {
+            Ok(num) => num,
+            Err(_) => continue,
+        };
+        break
+    }
     let mut int = m.interval(a, b);
     println!("x ≈ {}", m.mach(&mut int, precision));
 }
