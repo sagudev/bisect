@@ -47,8 +47,8 @@ pub struct m {
 
 impl m {
     pub fn new(expr: String) -> Self {
-        if !expr.contains("x") {
-            panic!("Where is x?")
+        if !expr.contains('x') {
+            panic!("Kje je x?")
         }
         meval::eval_str(expr.replace("x", &"(1)")).unwrap();
         Self { expr }
@@ -83,6 +83,7 @@ impl m {
     fn c(&self, int: interval) -> num {
         self.get(int.get_c())
     }
+    #[allow(clippy::float_cmp)]
     pub fn mach(&self, int: &mut interval, precision: usize) -> f64 {
         let mut i = 0;
         loop {
@@ -99,24 +100,23 @@ impl m {
             } else if b.sign.is_none() {
                 printer!("Dobili smo točno ničlo: x={}", b.x);
                 return b.x;
+            } else if a.sign.unwrap() == b.sign.unwrap() {
+                printer!("Ne znam določiti zato izpisujem neumnosti!");
+                return 0.0;
             } else {
-                if a.sign.unwrap() == b.sign.unwrap() {
-                    panic!("Ne znam določiti");
+                let c = self.c(*int);
+                printer!("c{} = {} = {}", i, F::from(c.x), c.x);
+                if c.sign.is_none() {
+                    printer!("c{} je ničla", i);
+                    return c.x;
                 } else {
-                    let c = self.c(*int);
-                    printer!("c{} = {} = {}", i, F::from(c.x), c.x);
-                    if c.sign.is_none() {
-                        printer!("c{} je ničla", i);
-                        return c.x;
-                    } else {
-                        printer!(
-                            "p(c{}) = {} kar je {}",
-                            i,
-                            c.p,
-                            display_bool(c.sign.unwrap())
-                        );
-                        *int = int.get_interval(c);
-                    }
+                    printer!(
+                        "p(c{}) = {} kar je {}",
+                        i,
+                        c.p,
+                        display_bool(c.sign.unwrap())
+                    );
+                    *int = int.get_interval(c);
                 }
             }
             i += 1;
@@ -126,9 +126,9 @@ impl m {
 
 fn display_bool(b: bool) -> &'static str {
     if b {
-        "poz"
+        " > 0"
     } else {
-        "neg"
+        " < 0"
     }
 }
 
