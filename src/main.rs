@@ -1,3 +1,6 @@
+use std::io::Read;
+use std::io::Write;
+
 type F = fraction::Fraction;
 
 #[derive(Debug, Clone, Copy)]
@@ -120,6 +123,18 @@ fn round(f: f64, precision: usize) -> f64 {
     (f * 10_f64.powf(precision as f64)).round() / 10_f64.powf(precision as f64)
 }
 
+fn pause() {
+    let mut stdin = std::io::stdin();
+    let mut stdout = std::io::stdout();
+
+    // We want the cursor to stay at the end of the line, so we print without a newline and flush manually.
+    write!(stdout, "Press any key to continue...").unwrap();
+    stdout.flush().unwrap();
+
+    // Read a single byte and discard
+    let _ = stdin.read(&mut [0u8]).unwrap();
+}
+
 fn main() {
     let m;
     loop {
@@ -171,6 +186,7 @@ fn main() {
     }
     let mut int = m.interval(a, b);
     println!("x ≈ {}", m.mach(&mut int, precision));
+    pause();
 }
 
 #[test]
