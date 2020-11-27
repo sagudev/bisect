@@ -23,3 +23,5 @@ sed -i '/typeof .* == '\''function'\'' ? .* : notDefined('\''.*'\'');/{s! == '\'
 sed -i '/typeof .* == '\''function'\'' ? .* : notDefined('\''.*'\'');/{s! : notDefined('\''!(); } : notDefined('\''!g}' ./pkg/bisect.js
 # What's changed  in postgen
 diff ./pkg/bisect.js ./pkg/bisect.js.bk
+rm ./pkg/package.json
+rm ./pkg/.gitignore
