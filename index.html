@@ -51,11 +51,11 @@
         }
     </script>
     <form onsubmit="return form();">
-        Polinom: <input type="text" name="fname" id="polinom"><br>
+        Polinom (v obliki x^3-3*x+1): <input type="text" name="fname" id="polinom" value="x^3-3*x+1"><br>
         <label for="interval">Ničla na intervalu: </label>
         <input type="text" id="interval" readonly style="border:0; color:#f6931f; font-weight:bold;">
         <div id="slider-range"></div>
-        Natančnost na <input type="number" id="natancnost" name="quantity" min="1" max="20"> decimalnih mest<br>
+        Natančnost na <input type="number" id="natancnost" name="quantity" min="1" max="20" value="2"> decimalnih mest<br>
         <input type="submit" value="Submit">
     </form>
     <code id="out">
