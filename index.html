@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        $(function () {
+            $("#slider-range").slider({
+                range: true,
+                min: -20,
+                max: 20,
+                values: [0, 1],
+                slide: function (event, ui) {
+                    $("#interval").val(ui.values[0] + " - " + ui.values[1]);
+                }
+            });
+            $("#interval").val("" + $("#slider-range").slider("values", 0) +
+                " | " + $("#slider-range").slider("values", 1));
+        });
+    </script>
+</head>
+
+<body>
+    <script>
+        function print(f) {
+            document.getElementById("out").innerHTML += (f + "<br>");
+        }
+    </script>
+    <script type="module">
+        import init, { js_mach } from './pkg/bisect.js';
+        async function run() {
+            await init();
+        }
+        run();
+        /* Export to global */
+        window.js_mach = js_mach;
+    </script>
+    <script>
+        function form() {
+            poli = document.getElementById("polinom").value;
+            interval = document.getElementById("interval").value.split("|");
+            natancnost = document.getElementById("natancnost").value;
+            //console.log("|" + poli + "|" + interval[0].trim() + "|" + natancnost + "|")
+            print(js_mach(poli, interval[0].trim(), interval[1].trim(), natancnost));
+            return false;
+        }
+    </script>
+    <form onsubmit="return form();">
+        Polinom: <input type="text" name="fname" id="polinom"><br>
+        <label for="interval">Ničla na intervalu: </label>
+        <input type="text" id="interval" readonly style="border:0; color:#f6931f; font-weight:bold;">
+        <div id="slider-range"></div>
+        Natančnost na <input type="number" id="natancnost" name="quantity" min="1" max="20"> decimalnih mest<br>
+        <input type="submit" value="Submit">
+    </form>
+    <code id="out">
+
+    </code>
+</body>
+
+</html>
