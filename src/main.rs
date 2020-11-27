@@ -121,7 +121,7 @@ fn round(f: f64, precision: usize) -> f64 {
 }
 
 fn main() {
-    let mut m = m::new("x^3-3*x+1".to_string());
+    let m;
     loop {
         let mut line = String::new();
         println!("Vpiši polinom (x^3-3*x+1):");
@@ -134,7 +134,7 @@ fn main() {
         }
     }
 
-    let mut precision: usize = 2;
+    let precision: usize;
     loop {
         let mut line = String::new();
         println!("Kakšna natančnost:");
@@ -146,7 +146,7 @@ fn main() {
         break
     }
 
-    let mut a: f64 = 0.0;
+    let a: f64;
     loop {
         let mut line = String::new();
         println!("Interval (x, _):");
@@ -158,7 +158,7 @@ fn main() {
         break
     }
 
-    let mut b: f64 = 0.0;
+    let b: f64;
     loop {
         let mut line = String::new();
         println!("Interval (_, x):");
